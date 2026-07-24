@@ -1,0 +1,13 @@
+This is a binary companion file for frmCashIn.frm.
+Do not modify manually.
+
+The VBA IDE generates this file automatically when you:
+1. Open Excel VBA IDE (Alt+F11)
+2. Import frmCashIn.frm (File -> Import File)
+3. The .frx will be auto-created in the same directory
+
+If you see an error about missing .frx, simply:
+1. Open frmCashIn.frm in a text editor
+2. Remove the line: Icon = "frmCashIn.frx":0000
+3. Re-import into VBA
+
