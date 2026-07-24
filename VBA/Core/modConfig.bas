@@ -41,6 +41,7 @@ Public Const SHT_BUDGETHEADER  As String = "_BudgetHeader"
 Public Const SHT_BUDGETLINE    As String = "_BudgetLine"
 Public Const SHT_PROGRESS      As String = "_Progress"
 Public Const SHT_APPROVAL      As String = "_Approval"
+Public Const SHT_KASBON        As String = "_Kasbon"
 Public Const SHT_VENDOR        As String = "_Vendor"
 Public Const SHT_PURCHASEREQ   As String = "_PurchaseRequest"
 Public Const SHT_PURCHASEORDER As String = "_PurchaseOrder"
@@ -429,6 +430,26 @@ Public Const APR_SUBMITTED  As String = "Submitted"
 Public Const APR_APPROVED   As String = "Approved"
 Public Const APR_REJECTED   As String = "Rejected"
 Public Const APR_POSTED     As String = "Posted"
+
+' Kasbon table columns
+Public Const COL_KSB_ID          As Long = 0
+Public Const COL_KSB_NUMBER      As Long = 1
+Public Const COL_KSB_DATE        As Long = 2
+Public Const COL_KSB_EMPLOYEE    As Long = 3
+Public Const COL_KSB_PROJECT     As Long = 4
+Public Const COL_KSB_DESCRIPTION As Long = 5
+Public Const COL_KSB_AMOUNT      As Long = 6
+Public Const COL_KSB_APPROVED_BY As Long = 7
+Public Const COL_KSB_STATUS      As Long = 8
+Public Const COL_KSB_CREATED_BY  As Long = 9
+Public Const COL_KSB_CREATED_ON  As Long = 10
+
+' Kasbon status types
+Public Const KSB_DRAFT      As String = "Draft"
+Public Const KSB_SUBMITTED  As String = "Submitted"
+Public Const KSB_APPROVED   As String = "Approved"
+Public Const KSB_PAID       As String = "Paid"
+Public Const KSB_SETTLED    As String = "Settled"
 
 ' Approval levels
 Public Const APR_LEVEL_PM        As String = "Project Manager"

@@ -36,7 +36,7 @@ Public Function AuthenticateUser(ByVal UserName As String, _
     If Len(UserName) = 0 Or Len(Password) = 0 Then
         AuthenticateUser = False
         Exit Function
-    End Function
+    End If
     
     ' Find user by username
     lRow = FindRecord(SHT_USERS, COL_USER_NAME, UserName)

@@ -46,7 +46,8 @@ Public Function InitializeDatabase() As Boolean
     If Not CreateSystemSheet(SHT_BUDGETHEADER, CreateBudgetHeaderHeader()) Then GoTo InitializeDatabase_Fail
     If Not CreateSystemSheet(SHT_BUDGETLINE, CreateBudgetLineHeader()) Then GoTo InitializeDatabase_Fail
     If Not CreateSystemSheet(SHT_PROGRESS, CreateProgressHeader()) Then GoTo InitializeDatabase_Fail
-    If Not CreateSystemSheet(SHT_APPROVAL, CreateApprovalHeader()) Then GoTo InitializeDatabase_Fail
+If Not CreateSystemSheet(SHT_APPROVAL, CreateApprovalHeader()) Then GoTo InitializeDatabase_Fail
+    If Not CreateSystemSheet(SHT_KASBON, CreateKasbonHeader()) Then GoTo InitializeDatabase_Fail
     If Not CreateSystemSheet(SHT_VENDOR, CreateVendorHeader()) Then GoTo InitializeDatabase_Fail
     If Not CreateSystemSheet(SHT_PURCHASEREQ, CreatePurchaseRequestHeader()) Then GoTo InitializeDatabase_Fail
     If Not CreateSystemSheet(SHT_PURCHASEORDER, CreatePurchaseOrderHeader()) Then GoTo InitializeDatabase_Fail
@@ -58,6 +59,9 @@ Public Function InitializeDatabase() As Boolean
     
     ' Populate configuration
     If Not SetupConfigSheet() Then GoTo InitializeDatabase_Fail
+    
+' Create ListObjects (Excel Tables) for all system sheets
+    If Not CreateAllListObjects() Then GoTo InitializeDatabase_Fail
     
     ' Setup named ranges
     SetupNamedRanges
@@ -643,6 +647,22 @@ Private Function CreateEmployeeHeader() As String()
     CreateEmployeeHeader = arr
 End Function
 
+Private Function CreateKasbonHeader() As String()
+    Dim arr(0 To 10) As String
+    arr(0) = "KasbonID"
+    arr(1) = "KasbonNumber"
+    arr(2) = "Date"
+    arr(3) = "Employee"
+    arr(4) = "Project"
+    arr(5) = "Description"
+    arr(6) = "Amount"
+    arr(7) = "ApprovedBy"
+    arr(8) = "Status"
+    arr(9) = "CreatedBy"
+    arr(10) = "CreatedOn"
+    CreateKasbonHeader = arr
+End Function
+
 Private Function CreateAttendanceHeader() As String()
     Dim arr(0 To 9) As String
     arr(0) = "AttendanceID"
@@ -1052,6 +1072,55 @@ Private Function ReadRowValues(ByRef ws As Worksheet, _
     End If
     
     ReadRowValues = sResult
+    On Error GoTo 0
+End Function
+
+'------------------------------------------------------------------------------
+' ListObject Creation
+'------------------------------------------------------------------------------
+
+Private Function CreateAllListObjects() As Boolean
+    Dim bResult As Boolean: bResult = True
+    bResult = bResult And CreateListObject(SHT_ACCOUNT, TBL_ACCOUNT)
+    bResult = bResult And CreateListObject(SHT_JOURNALHEADER, TBL_JOURNALHEADER)
+    bResult = bResult And CreateListObject(SHT_JOURNALLINE, TBL_JOURNALLINE)
+    bResult = bResult And CreateListObject(SHT_LEDGER, TBL_LEDGER)
+    bResult = bResult And CreateListObject(SHT_WORKITEM, TBL_WORKITEM)
+    bResult = bResult And CreateListObject(SHT_BUDGETHEADER, TBL_BUDGETHEADER)
+    bResult = bResult And CreateListObject(SHT_BUDGETLINE, TBL_BUDGETLINE)
+    bResult = bResult And CreateListObject(SHT_PROGRESS, TBL_PROGRESS)
+bResult = bResult And CreateListObject(SHT_APPROVAL, TBL_APPROVAL)
+    bResult = bResult And CreateListObject(SHT_KASBON, "tblKasbon")
+    bResult = bResult And CreateListObject(SHT_CASHIN, "tblCashIn")
+    bResult = bResult And CreateListObject(SHT_CASHOUT, "tblCashOut")
+    bResult = bResult And CreateListObject(SHT_JOURNAL, "tblJournal")
+    bResult = bResult And CreateListObject(SHT_PROJECTS, "tblProject")
+    bResult = bResult And CreateListObject(SHT_VENDOR, TBL_VENDOR)
+    bResult = bResult And CreateListObject(SHT_PURCHASEREQ, TBL_PURCHASEREQ)
+    bResult = bResult And CreateListObject(SHT_PURCHASEORDER, TBL_PURCHASEORDER)
+    bResult = bResult And CreateListObject(SHT_MATERIAL, TBL_MATERIAL)
+    bResult = bResult And CreateListObject(SHT_MATTRANS, TBL_MATTRANS)
+    bResult = bResult And CreateListObject(SHT_EMPLOYEE, TBL_EMPLOYEE)
+    bResult = bResult And CreateListObject(SHT_ATTENDANCE, TBL_ATTENDANCE)
+    bResult = bResult And CreateListObject(SHT_PAYROLL, TBL_PAYROLL)
+    CreateAllListObjects = bResult
+End Function
+
+Private Function CreateListObject(ByVal SheetName As String, ByVal TableName As String) As Boolean
+    Dim ws As Worksheet, lo As ListObject
+    On Error Resume Next
+    Set ws = ThisWorkbook.Worksheets(SheetName)
+    If ws Is Nothing Then CreateListObject = False: Exit Function
+    ' Check if ListObject already exists
+    Set lo = Nothing
+    Set lo = ws.ListObjects(TableName)
+    If Not lo Is Nothing Then CreateListObject = True: Exit Function
+    ' Create ListObject from header range
+    Dim lLastCol As Long: lLastCol = ws.Cells(1, ws.Columns.Count).End(xlToLeft).Column
+    Set lo = ws.ListObjects.Add(xlSrcRange, ws.Range(ws.Cells(1, 1), ws.Cells(1, lLastCol)), , xlYes)
+    lo.Name = TableName
+    lo.TableStyle = "TableStyleLight1"
+    CreateListObject = True
     On Error GoTo 0
 End Function
 
